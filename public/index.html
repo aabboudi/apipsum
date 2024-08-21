@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>APIpsum</title>
+  <link href="/css/output.css" rel="stylesheet">
 </head>
+
 <body>
-  <h1>Welcome to APIpsum!</h1>
-  <a href="/api/generate">Start generating</a><br>
-  <a href="/docs">Read docs</a>
+  <main class="p-8 min-h-screen flex flex-col space-y-4 dark:bg-black dark:text-white">
+    <div class="w-full">
+      <h1 class="text-3xl font-bold text-center">Welcome to APIpsum!</h1>
+    </div>
+    <div class="w-full flex justify-center space-x-4">
+      <div class="flex justify-end">
+        <a href="/api/generate" class="cursor-pointer py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+          Start generating
+        </a>
+      </div>
+      <div class="flex justify-start">
+        <a href="/docs" class="cursor-pointer py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-800 dark:hover:bg-blue-900 dark:hover:text-white dark:focus:bg-blue-900">
+          Read docs
+        </a>
+      </div>
+    </div>
+  </main>
 </body>
+
 </html>

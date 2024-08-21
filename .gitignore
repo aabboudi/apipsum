@@ -24,3 +24,5 @@ go.work.sum
 # Project specific files
 *local.*
 tmp/
+node_modules/
+output.css
