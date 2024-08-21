@@ -22,4 +22,5 @@ go.work.sum
 .env
 
 # Project specific files
-*.local.md
+*local.*
+tmp/

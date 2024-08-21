@@ -28,6 +28,16 @@ func generateData(schema map[string]string) map[string]interface{} {
 	return data
 }
 
+// @Summary Generate JSON data
+// @Description Generate JSON objects based on the schema provided in the request body
+// @Tags Generate
+// @Accept json
+// @Produce json
+// @Param count header int true "Number of objects to generate"
+// @Param schema body map[string]string true "Schema of the JSON object"
+// @Success 200 {array} map[string]interface{}
+// @Failure 400 {string} string "Invalid request"
+// @Router /api/generate [post]
 func SetupIpsum(app *fiber.App) {
 	app.Post("/api/generate", func(c *fiber.Ctx) error {
 		countHeader := c.Get("count", "1")
@@ -47,5 +57,21 @@ func SetupIpsum(app *fiber.App) {
 		}
 
 		return c.JSON(results)
+	})
+}
+
+// @Summary Test API endpoint
+// @Description Respond with status 200 if a GET request is sent to this endpoint. Used to verify the availability and responsiveness of the /api/generate endpoint.
+// @Tags Generate
+// @Produce json
+// @Success 200 {object} map[string]interface{} "API is working"
+// @Failure 400 {string} string "Invalid request"
+// @Router /api/generate [get]
+func TestIpsum(app *fiber.App) {
+	app.Get("/api/generate", func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status":   200,
+			"response": "Yes. The endpoint is working.",
+		})
 	})
 }

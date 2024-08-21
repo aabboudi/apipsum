@@ -1,0 +1,64 @@
+basePath: /
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a sample server.
+  title: APIpsum
+  version: 0.1.0
+paths:
+  /api/generate:
+    get:
+      description: Respond with status 200 if a GET request is sent to this endpoint.
+        Used to verify the availability and responsiveness of the /api/generate endpoint.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: API is working
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+      summary: Test API endpoint
+      tags:
+      - Generate
+    post:
+      consumes:
+      - application/json
+      description: Generate JSON objects based on the schema provided in the request
+        body
+      parameters:
+      - description: Number of objects to generate
+        in: header
+        name: count
+        required: true
+        type: integer
+      - description: Schema of the JSON object
+        in: body
+        name: schema
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+      summary: Generate JSON data
+      tags:
+      - Generate
+swagger: "2.0"

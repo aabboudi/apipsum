@@ -1,0 +1,92 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server.",
+        "title": "APIpsum",
+        "contact": {},
+        "version": "0.1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "paths": {
+        "/api/generate": {
+            "get": {
+                "description": "Respond with status 200 if a GET request is sent to this endpoint. Used to verify the availability and responsiveness of the /api/generate endpoint.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Generate"
+                ],
+                "summary": "Test API endpoint",
+                "responses": {
+                    "200": {
+                        "description": "API is working",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Generate JSON objects based on the schema provided in the request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Generate"
+                ],
+                "summary": "Generate JSON data",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Number of objects to generate",
+                        "name": "count",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Schema of the JSON object",
+                        "name": "schema",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
