@@ -16,10 +16,10 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Static("/", "./public/static")
+	app.Static("/", "./static")
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendFile("public/index.html")
+		return c.SendFile("views/index.html")
 	})
 
 	router.TestIpsum(app)
