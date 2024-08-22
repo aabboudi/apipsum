@@ -4,7 +4,9 @@
   "description": "APIpsum UI Package",
   "main": "index.js",
   "scripts": {
-    "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "watch:twcss": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "watch:css": "postcss ./static/css/input.css -o ./static/css/output.css --watch",
+    "build:css": "postcss ./static/css/input.css -o ./static/css/styles.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +15,8 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10"
+  },
+  "devDependencies": {
+    "postcss-cli": "^11.0.0"
   }
 }
