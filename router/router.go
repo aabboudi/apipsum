@@ -1,32 +1,11 @@
 package router
 
 import (
-	"math/rand"
+	"apipsum/controllers"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
-
-func generateData(schema map[string]string) map[string]interface{} {
-	data := make(map[string]interface{})
-
-	for key, valueType := range schema {
-		switch valueType {
-		case "string":
-			data[key] = "random_string_" + strconv.Itoa(rand.Intn(1000))
-		case "int":
-			data[key] = rand.Intn(100)
-		case "float":
-			data[key] = rand.Float64() * 100
-		case "bool":
-			data[key] = rand.Intn(2) == 1
-		default:
-			data[key] = nil
-		}
-	}
-
-	return data
-}
 
 // @Summary Generate JSON data
 // @Description Generate JSON objects based on the schema provided in the request body
@@ -53,7 +32,8 @@ func SetupIpsum(app *fiber.App) {
 
 		var results []map[string]interface{}
 		for i := 0; i < count; i++ {
-			results = append(results, generateData(schema))
+			data := controllers.GenerateData(schema)
+			results = append(results, data)
 		}
 
 		return c.JSON(results)
