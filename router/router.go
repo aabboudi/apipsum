@@ -25,9 +25,12 @@ func SetupIpsum(app *fiber.App) {
 			return c.Status(400).SendString("Invalid count")
 		}
 
-		schema := make(map[string]string)
+		schema := make(map[string]interface{})
 		if err := c.BodyParser(&schema); err != nil {
-			return c.Status(400).SendString("Invalid JSON schema")
+			return c.Status(400).JSON(fiber.Map{
+				"status": 400,
+				"error":  "Invalid JSON schema",
+			})
 		}
 
 		var results []map[string]interface{}

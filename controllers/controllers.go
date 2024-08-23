@@ -1,40 +1,46 @@
 package controllers
 
 import (
-	"math/rand"
-	"strconv"
-	"time"
+	"apipsum/utils"
 )
 
-func randomDate(startYear, endYear int) time.Time {
-	rng := rand.New(rand.NewSource(int64(rand.Intn(100))))
-
-	diff := time.Date(endYear, time.December, 31, 23, 59, 59, 0, time.UTC).Sub(
-		time.Date(startYear, time.January, 1, 0, 0, 0, 0, time.UTC)).Seconds()
-	randomSeconds := rng.Int63n(int64(diff) + 1)
-
-	randomDuration := time.Duration(randomSeconds) * time.Second
-	return time.Date(startYear, time.January, 1, 0, 0, 0, 0, time.UTC).Add(randomDuration)
-}
-
-// Must start with capital letter to be used outside this package
-func GenerateData(schema map[string]string) map[string]interface{} {
+func GenerateData(schema map[string]interface{}) map[string]interface{} {
 	data := make(map[string]interface{})
 
-	for key, valueType := range schema {
-		switch valueType {
-		case "string":
-			data[key] = "name_" + strconv.Itoa(rand.Intn(1000))
-		case "email":
-			data[key] = "email_" + strconv.Itoa(rand.Intn(10000)) + "@domain.com"
-		case "int":
-			data[key] = rand.Intn(100)
-		case "float":
-			data[key] = rand.Float64() * 100
+	for key, field := range schema {
+		fieldMap := field.(map[string]interface{})
+		fieldType := fieldMap["type"].(string)
+
+		var maxLength int
+		if val, ok := fieldMap["max_length"]; ok {
+			maxLength = int(val.(float64))
+		}
+
+		var min, max float64
+		if val, ok := fieldMap["min"]; ok {
+			min = val.(float64)
+		}
+		if val, ok := fieldMap["max"]; ok {
+			max = val.(float64)
+		}
+
+		switch fieldType {
 		case "bool":
-			data[key] = rand.Intn(2) == 1
-		case "datetime":
-			data[key] = randomDate(1900, 2024)
+			data[key] = utils.RandomBool()
+		case "int":
+			data[key], _ = utils.RandomInt(int(min), int(max))
+		case "float":
+			data[key], _ = utils.RandomFloat(min, max)
+		case "string":
+			if maxLength > 0 {
+				data[key], _ = utils.RandomString(maxLength)
+			} else {
+				data[key], _ = utils.RandomString()
+			}
+		case "email":
+			data[key], _ = utils.RandomEmail()
+		case "date":
+			data[key], _ = utils.RandomDate(1900, 2024)
 		default:
 			data[key] = nil
 		}
