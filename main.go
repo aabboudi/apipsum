@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "apipsum/docs"
+	"apipsum/middleware"
 	"apipsum/router"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,9 +15,14 @@ import (
 // @host            localhost:3000
 // @BasePath        /
 func main() {
+	logFile := middleware.SetupLogger()
+	defer logFile.Close()
+
 	app := fiber.New()
 
 	app.Static("/", "./static")
+
+	app.Use(middleware.Logger)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendFile("views/index.html")

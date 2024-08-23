@@ -26,3 +26,4 @@ go.work.sum
 tmp/
 node_modules/
 output.css
+*.log
