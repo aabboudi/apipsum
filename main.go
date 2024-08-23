@@ -3,10 +3,9 @@ package main
 import (
 	_ "apipsum/docs"
 	"apipsum/middleware"
-	"apipsum/router"
+	"apipsum/routes"
 
 	"github.com/gofiber/fiber/v2"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 // @title           APIpsum
@@ -19,23 +18,9 @@ func main() {
 	defer logFile.Close()
 
 	app := fiber.New()
-
 	app.Static("/", "./static")
-
 	app.Use(middleware.Logger)
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendFile("views/index.html")
-	})
-
-	router.TestIpsum(app)
-	router.SetupIpsum(app)
-
-	app.Get("/docs", func(c *fiber.Ctx) error {
-		return c.Redirect("/docs/index.html")
-	})
-
-	app.Get("/docs/*", fiberSwagger.WrapHandler)
+	routes.SetupRoutes(app)
 
 	app.Listen(":3000")
 }

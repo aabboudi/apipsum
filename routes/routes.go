@@ -1,11 +1,19 @@
-package router
+package routes
 
 import (
 	"apipsum/controllers"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
+
+func SetupRoutes(app *fiber.App) {
+	testGenerateRoute(app)
+	generateRoute(app)
+	swaggerRoute(app)
+	homePage(app)
+}
 
 // @Summary Generate JSON data
 // @Description Generate JSON objects based on the schema provided in the request body
@@ -17,7 +25,7 @@ import (
 // @Success 200 {array} map[string]interface{}
 // @Failure 400 {string} string "Invalid request"
 // @Router /api/generate [post]
-func SetupIpsum(app *fiber.App) {
+func generateRoute(app *fiber.App) {
 	app.Post("/api/generate", func(c *fiber.Ctx) error {
 		countHeader := c.Get("count", "1")
 		count, err := strconv.Atoi(countHeader)
@@ -50,11 +58,24 @@ func SetupIpsum(app *fiber.App) {
 // @Success 200 {object} map[string]interface{} "API is working"
 // @Failure 400 {string} string "Invalid request"
 // @Router /api/generate [get]
-func TestIpsum(app *fiber.App) {
+func testGenerateRoute(app *fiber.App) {
 	app.Get("/api/generate", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"status":   200,
 			"response": "Yes. The endpoint is working.",
 		})
+	})
+}
+
+func swaggerRoute(app *fiber.App) {
+	app.Get("/docs", func(c *fiber.Ctx) error {
+		return c.Redirect("/docs/index.html")
+	})
+	app.Get("/docs/*", fiberSwagger.WrapHandler)
+}
+
+func homePage(app *fiber.App) {
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendFile("views/index.html")
 	})
 }
