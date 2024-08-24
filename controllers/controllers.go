@@ -25,6 +25,16 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 			max = val.(float64)
 		}
 
+		var version, variant int
+		if val, ok := fieldMap["version"]; ok {
+			version = int(val.(float64))
+		}
+		if val, ok := fieldMap["variant"]; ok {
+			variant = int(val.(float64))
+		} else {
+			variant = 2
+		}
+
 		switch fieldType {
 		case "bool":
 			data[key] = utils.RandomBool()
@@ -42,6 +52,8 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 			data[key], err = utils.RandomEmail()
 		case "date":
 			data[key], err = utils.RandomDate(1900, 2024)
+		case "uuid":
+			data[key], err = utils.RandomUUID(version, variant)
 		default:
 			data[key] = nil
 		}

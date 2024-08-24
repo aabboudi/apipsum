@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -113,4 +114,45 @@ func RandomEmail() (string, error) {
 	}
 
 	return username + "@" + domain + "." + tld, nil
+}
+
+func RandomUUID(optional ...int) (string, error) {
+	version, variant := 4, 2
+
+	if len(optional) > 0 {
+		if optional[0] < 1 || optional[0] > 5 {
+			return "", fmt.Errorf("invalid UUID version: %d\nmust be between 1 and 5", optional[0])
+		} else {
+			version = optional[0]
+		}
+	}
+
+	if len(optional) == 2 {
+		variant = optional[1]
+	} else if len(optional) > 2 {
+		return "", errors.New("too many arguments")
+	}
+
+	uuid := make([]byte, 16)
+	for i := range uuid {
+		uuid[i] = byte(rand.Intn(256))
+	}
+
+	uuid[6] = (uuid[6] & 0x0f) | byte(version<<4)
+
+	switch variant {
+	case 0: // NCS backward compatibility
+		uuid[8] = (uuid[8] & 0x7f)
+	case 2: // RFC 4122/DCE 1.1
+		uuid[8] = (uuid[8] & 0x3f) | 0x80
+	case 6: // Microsoft Corporation GUID
+		uuid[8] = (uuid[8] & 0x1f) | 0xc0
+	case 7: // Future use
+		uuid[8] = (uuid[8] & 0x1f) | 0xe0
+	default:
+		return "", fmt.Errorf("invalid UUID variant: %d\nplease choose between 0, 2, 6, and 7", variant)
+	}
+
+	return fmt.Sprintf("%08x-%04x-%04x-%04x-%12x",
+		uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:]), nil
 }
