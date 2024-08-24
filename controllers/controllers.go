@@ -4,8 +4,9 @@ import (
 	"apipsum/utils"
 )
 
-func GenerateData(schema map[string]interface{}) map[string]interface{} {
+func GenerateData(schema map[string]interface{}) (map[string]interface{}, error) {
 	data := make(map[string]interface{})
+	var err error
 
 	for key, field := range schema {
 		fieldMap := field.(map[string]interface{})
@@ -28,23 +29,27 @@ func GenerateData(schema map[string]interface{}) map[string]interface{} {
 		case "bool":
 			data[key] = utils.RandomBool()
 		case "int":
-			data[key], _ = utils.RandomInt(int(min), int(max))
+			data[key], err = utils.RandomInt(int(min), int(max))
 		case "float":
-			data[key], _ = utils.RandomFloat(min, max)
+			data[key], err = utils.RandomFloat(min, max)
 		case "string":
 			if maxLength > 0 {
-				data[key], _ = utils.RandomString(maxLength)
+				data[key], err = utils.RandomString(maxLength)
 			} else {
-				data[key], _ = utils.RandomString()
+				data[key], err = utils.RandomString()
 			}
 		case "email":
-			data[key], _ = utils.RandomEmail()
+			data[key], err = utils.RandomEmail()
 		case "date":
-			data[key], _ = utils.RandomDate(1900, 2024)
+			data[key], err = utils.RandomDate(1900, 2024)
 		default:
 			data[key] = nil
 		}
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	return data
+	return data, nil
 }

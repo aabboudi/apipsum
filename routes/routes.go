@@ -43,7 +43,13 @@ func generateRoute(app *fiber.App) {
 
 		var results []map[string]interface{}
 		for i := 0; i < count; i++ {
-			data := controllers.GenerateData(schema)
+			data, err := controllers.GenerateData(schema)
+			if err != nil {
+				return c.Status(400).JSON(fiber.Map{
+					"status": 400,
+					"error":  err.Error(),
+				})
+			}
 			results = append(results, data)
 		}
 
