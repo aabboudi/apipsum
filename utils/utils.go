@@ -156,3 +156,39 @@ func RandomUUID(optional ...int) (string, error) {
 	return fmt.Sprintf("%08x-%04x-%04x-%04x-%12x",
 		uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:]), nil
 }
+
+func RandomPhoneNumber(optional ...string) (string, error) {
+	formats := map[string]string{
+		"us1":         "(XXX) XXX-XXXX",
+		"us2":         "XXX-XXX-XXXX",
+		"intl":        "+XX XXXXXXXXXX",
+		"intl_dashed": "+XX-XXXX-XXXXXX",
+		"intl_area":   "+XX (XXX) XXX-XXXX",
+		"simple":      "XXXXX-XXXXX",
+		"dotted":      "XXX.XXX.XXXX",
+		"plain":       "XXXXXXXXXX",
+	}
+
+	var format_key string
+	if len(optional) == 0 {
+		format_key = "us1"
+	} else if len(optional) == 1 {
+		format_key = optional[0]
+	} else {
+		return "", errors.New("too many arguments")
+	}
+
+	if format, exists := formats[format_key]; exists {
+		var result strings.Builder
+		for _, char := range format {
+			if char == 'X' {
+				result.WriteByte(byte(rand.Intn(10) + '0'))
+			} else {
+				result.WriteByte(byte(char))
+			}
+		}
+		return result.String(), nil
+	} else {
+		return "", fmt.Errorf("invalid format code: %s\nplease select a valid format", format_key)
+	}
+}

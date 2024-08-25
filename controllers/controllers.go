@@ -35,6 +35,11 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 			variant = 2
 		}
 
+		var format string
+		if val, ok := fieldMap["format"]; ok {
+			format = val.(string)
+		}
+
 		switch fieldType {
 		case "bool":
 			data[key] = utils.RandomBool()
@@ -54,6 +59,12 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 			data[key], err = utils.RandomDate(1900, 2024)
 		case "uuid":
 			data[key], err = utils.RandomUUID(version, variant)
+		case "phone_number":
+			if format == "" {
+				data[key], err = utils.RandomPhoneNumber()
+			} else {
+				data[key], err = utils.RandomPhoneNumber(format)
+			}
 		default:
 			data[key] = nil
 		}
