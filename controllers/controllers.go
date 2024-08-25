@@ -42,7 +42,7 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 
 		switch fieldType {
 		case "bool":
-			data[key] = utils.RandomBool()
+			data[key], err = utils.RandomBool()
 		case "int":
 			data[key], err = utils.RandomInt(int(min), int(max))
 		case "float":

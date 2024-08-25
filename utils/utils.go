@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-func RandomBool() bool {
-	return rand.Intn(2) == 1
+func RandomBool() (bool, error) {
+	return rand.Intn(2) == 1, nil
 }
 
 func RandomInt(optional ...int) (int, error) {
