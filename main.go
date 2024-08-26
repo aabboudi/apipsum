@@ -18,8 +18,9 @@ func main() {
 	defer logFile.Close()
 
 	app := fiber.New()
-	app.Static("/", "./static")
 	app.Use(middleware.Logger)
+	// app.Use(middleware.RequestLimiter())
+	app.Static("/", "./static")
 	routes.SetupRoutes(app)
 
 	app.Listen(":3000")

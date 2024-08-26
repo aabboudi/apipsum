@@ -2,6 +2,7 @@ package routes
 
 import (
 	"apipsum/controllers"
+	"apipsum/middleware"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,7 +27,7 @@ func SetupRoutes(app *fiber.App) {
 // @Failure 400 {string} string "Invalid request"
 // @Router /api/generate [post]
 func generateRoute(app *fiber.App) {
-	app.Post("/api/generate", func(c *fiber.Ctx) error {
+	app.Post("/api/generate", middleware.ResponseLimiter, func(c *fiber.Ctx) error {
 		countHeader := c.Get("count", "1")
 		count, err := strconv.Atoi(countHeader)
 		if err != nil || count <= 0 {
