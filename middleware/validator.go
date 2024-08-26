@@ -15,23 +15,30 @@ func RequestLimiter() fiber.Handler {
 	})
 }
 
-const maxResponseSize = 1048576 // 1MB
-
 func ResponseLimiter(c *fiber.Ctx) error {
 	countHeader := c.Get("count", "1")
 	count, err := strconv.Atoi(countHeader)
 	if err != nil || count <= 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":   fiber.StatusBadRequest,
+		const status = fiber.StatusBadRequest
+		return c.Status(status).JSON(fiber.Map{
+			"status":   status,
 			"response": "Invalid count",
+		})
+	} else if count > 1000 {
+		const status = fiber.StatusRequestEntityTooLarge
+		return c.Status(status).JSON(fiber.Map{
+			"status":   status,
+			"response": "Invalid count. Please limit your request to under 1000",
 		})
 	}
 
 	schema := c.Body()
 	estimatedSize := estimateResponseSize(schema) * count
+	const maxResponseSize = 1048576 // 1MB
 	if estimatedSize > maxResponseSize {
-		return c.Status(fiber.StatusRequestEntityTooLarge).JSON(fiber.Map{
-			"status":   fiber.StatusRequestEntityTooLarge,
+		const status = fiber.StatusRequestEntityTooLarge
+		return c.Status(status).JSON(fiber.Map{
+			"status":   status,
 			"response": "Estimated response too large",
 		})
 	}
