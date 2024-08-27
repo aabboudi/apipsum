@@ -68,15 +68,15 @@ func RandomDate(startYear, endYear int) (time.Time, error) {
 }
 
 func RandomString(optional ...int) (string, error) {
-	var length int
+	var maxLength int
 
 	switch len(optional) {
 	case 0:
-		length = rand.Intn(8) + 3
+		maxLength = rand.Intn(8) + 3
 	case 1:
-		length = optional[0]
-		if length <= 0 {
-			return "", errors.New("length must be greater than 0")
+		maxLength = optional[0]
+		if maxLength <= 0 {
+			return "", errors.New("maximum length must be greater than 0")
 		}
 	default:
 		return "", errors.New("too many arguments")
@@ -86,6 +86,8 @@ func RandomString(optional ...int) (string, error) {
 	consonants := "bcdfghjklmnpqrstvwxyz"
 
 	var word strings.Builder
+
+	length, _ := RandomInt(1, maxLength)
 	for i := 0; i < length; i++ {
 		if i%2 == 0 {
 			word.WriteByte(consonants[rand.Intn(len(consonants))])
