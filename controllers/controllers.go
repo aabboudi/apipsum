@@ -2,6 +2,9 @@ package controllers
 
 import (
 	"apipsum/utils"
+	"errors"
+	"strings"
+	"time"
 )
 
 func GenerateData(schema map[string]interface{}) (map[string]interface{}, error) {
@@ -10,63 +13,35 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 
 	for key, field := range schema {
 		fieldMap := field.(map[string]interface{})
-		fieldType := fieldMap["type"].(string)
-
-		var maxLength int
-		if val, ok := fieldMap["max_length"]; ok {
-			maxLength = int(val.(float64))
-		}
-
-		var min, max float64
-		if val, ok := fieldMap["min"]; ok {
-			min = val.(float64)
-		}
-		if val, ok := fieldMap["max"]; ok {
-			max = val.(float64)
-		}
-
-		var version, variant int
-		if val, ok := fieldMap["version"]; ok {
-			version = int(val.(float64))
-		}
-		if val, ok := fieldMap["variant"]; ok {
-			variant = int(val.(float64))
-		} else {
-			variant = 2
-		}
-
-		var format string
-		if val, ok := fieldMap["format"]; ok {
-			format = val.(string)
-		}
+		fieldType := strings.ToLower(fieldMap["type"].(string))
 
 		switch fieldType {
 		case "bool":
-			data[key], err = utils.RandomBool()
+			data[key], err = handleBool()
+
 		case "int":
-			data[key], err = utils.RandomInt(int(min), int(max))
+			data[key], err = handleInt(fieldMap)
+
 		case "float":
-			data[key], err = utils.RandomFloat(min, max)
+			data[key], err = handleFloat(fieldMap)
+
 		case "string":
-			if maxLength > 0 {
-				data[key], err = utils.RandomString(maxLength)
-			} else {
-				data[key], err = utils.RandomString()
-			}
+			data[key], err = handleString(fieldMap)
+
 		case "email":
-			data[key], err = utils.RandomEmail()
+			data[key], err = handleEmail()
+
 		case "date":
-			data[key], err = utils.RandomDate(1900, 2024)
+			data[key], err = handleDate()
+
 		case "uuid":
-			data[key], err = utils.RandomUUID(version, variant)
+			data[key], err = handleUUID(fieldMap)
+
 		case "phone_number":
-			if format == "" {
-				data[key], err = utils.RandomPhoneNumber()
-			} else {
-				data[key], err = utils.RandomPhoneNumber(format)
-			}
+			data[key], err = handlePhoneNumber(fieldMap)
+
 		default:
-			data[key] = nil
+			return nil, errors.New("invalid data type")
 		}
 
 		if err != nil {
@@ -75,4 +50,80 @@ func GenerateData(schema map[string]interface{}) (map[string]interface{}, error)
 	}
 
 	return data, nil
+}
+
+func handleBool() (bool, error) {
+	return utils.RandomBool()
+}
+
+func handleString(fieldMap map[string]interface{}) (string, error) {
+	var maxLength int
+	if val, ok := fieldMap["max_length"]; ok {
+		maxLength = int(val.(float64))
+	}
+
+	if maxLength > 0 {
+		return utils.RandomString(maxLength)
+	} else {
+		return utils.RandomString()
+	}
+}
+
+func handlePhoneNumber(fieldMap map[string]interface{}) (string, error) {
+	var format string
+	if val, ok := fieldMap["format"]; ok {
+		format = val.(string)
+	}
+
+	if format == "" {
+		return utils.RandomPhoneNumber()
+	} else {
+		return utils.RandomPhoneNumber(format)
+	}
+}
+
+func handleUUID(fieldMap map[string]interface{}) (string, error) {
+	var version, variant int
+	if val, ok := fieldMap["version"]; ok {
+		version = int(val.(float64))
+	}
+	if val, ok := fieldMap["variant"]; ok {
+		variant = int(val.(float64))
+	} else {
+		variant = 2
+	}
+
+	return utils.RandomUUID(version, variant)
+}
+
+func handleEmail() (string, error) {
+	return utils.RandomEmail()
+}
+
+func handleInt(fieldMap map[string]interface{}) (int, error) {
+	var min, max float64
+	if val, ok := fieldMap["min"]; ok {
+		min = val.(float64)
+	}
+	if val, ok := fieldMap["max"]; ok {
+		max = val.(float64)
+	}
+
+	return utils.RandomInt(int(min), int(max))
+}
+
+func handleFloat(fieldMap map[string]interface{}) (float64, error) {
+	var min, max float64
+	if val, ok := fieldMap["min"]; ok {
+		min = val.(float64)
+	}
+	if val, ok := fieldMap["max"]; ok {
+		max = val.(float64)
+	}
+
+	return utils.RandomFloat(min, max)
+}
+
+func handleDate() (time.Time, error) {
+	return utils.RandomDate(1900, 2024)
 }
