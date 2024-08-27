@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"apipsum/utils/letters"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -82,17 +83,13 @@ func RandomString(optional ...int) (string, error) {
 		return "", errors.New("too many arguments")
 	}
 
-	vowels := "aeiou"
-	consonants := "bcdfghjklmnpqrstvwxyz"
-
 	var word strings.Builder
-
 	length, _ := RandomInt(1, maxLength)
 	for i := 0; i < length; i++ {
 		if i%2 == 0 {
-			word.WriteByte(consonants[rand.Intn(len(consonants))])
+			word.WriteByte(letters.SelectLetter(letters.Consonants, letters.ConsonantFrequency))
 		} else {
-			word.WriteByte(vowels[rand.Intn(len(vowels))])
+			word.WriteByte(letters.SelectLetter(letters.Vowels, letters.VowelFrequency))
 		}
 	}
 
