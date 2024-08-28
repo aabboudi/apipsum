@@ -34,8 +34,9 @@ func ResponseLimiter(c *fiber.Ctx) error {
 
 	schema := make(map[string]interface{})
 	if err := c.BodyParser(&schema); err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"status": 400,
+		const status = fiber.StatusBadRequest
+		return c.Status(status).JSON(fiber.Map{
+			"status": status,
 			"error":  "Invalid JSON schema",
 		})
 	}
