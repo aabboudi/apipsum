@@ -4,7 +4,7 @@
   "description": "APIpsum UI Package",
   "main": "index.js",
   "scripts": {
-    "watch:twcss": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "watch:twcss": "npx tailwindcss -i ./css/input.css -o ./css/output.css --watch",
     "watch:css": "postcss ./css/input.css -o ./css/output.css --watch",
     "build:css": "postcss ./css/input.css -o ./css/styles.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
