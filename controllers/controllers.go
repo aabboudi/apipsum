@@ -60,7 +60,14 @@ func handleString(fieldMap map[string]interface{}) (string, error) {
 	var maxLength int
 
 	if val, ok := fieldMap["max_length"]; ok {
-		maxLength = val.(int)
+		switch v := val.(type) {
+		case float64:
+			maxLength = int(v)
+		case int:
+			maxLength = v
+		default:
+			return "", errors.New("max_length must be a valid numbern")
+		}
 	}
 
 	if maxLength > 0 {
