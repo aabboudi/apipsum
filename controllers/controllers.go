@@ -58,8 +58,9 @@ func handleBool() (bool, error) {
 
 func handleString(fieldMap map[string]interface{}) (string, error) {
 	var maxLength int
+
 	if val, ok := fieldMap["max_length"]; ok {
-		maxLength = int(val.(float64))
+		maxLength = val.(int)
 	}
 
 	if maxLength > 0 {
